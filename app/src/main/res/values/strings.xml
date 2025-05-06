@@ -3,9 +3,10 @@
     <string name="list_kosong">Belum ada data</string>
     <string name="x_diklik">%1$s diklik!</string>
     <string name="tambah_barang">Tambah barang</string>
-    <string name="belum_bisa">Belum bisa tambah barang.</string>
     <string name="nama_barang">Nama</string>
     <string name="kategori_barang">Kategori</string>
     <string name="jumlah_barang">Jumlah</string>
     <string name="deskripsi_barang">Deskripsi</string>
+    <string name="kembali">Kembali</string>
+    <string name="simpan">Simpan</string>
 </resources>

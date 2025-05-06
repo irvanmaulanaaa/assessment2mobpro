@@ -32,15 +32,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.irvanmaulana0013.gudangku.R
 import com.irvanmaulana0013.gudangku.model.Barang
+import com.irvanmaulana0013.gudangku.navigation.Screen
 import com.irvanmaulana0013.gudangku.ui.theme.GudangkuTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
-    val context = LocalContext.current
-
+fun MainScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,7 +57,7 @@ fun MainScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    Toast.makeText(context, R.string.belum_bisa, Toast.LENGTH_SHORT).show()
+                    navController.navigate(Screen.FormBaru.route)
                 }
             ) {
                 Icon(
@@ -137,6 +138,6 @@ fun ListItem(barang: Barang, onClick: () -> Unit) {
 @Composable
 fun MainScreenPreview() {
     GudangkuTheme {
-        MainScreen()
+        MainScreen(rememberNavController())
     }
 }
