@@ -102,4 +102,8 @@ class MainViewModel : ViewModel() {
             "2025-04-13 12:40:29"
         )
     )
+
+    fun getBarang(id: Long): Barang? {
+        return data.find { it.id == id }
+    }
 }
