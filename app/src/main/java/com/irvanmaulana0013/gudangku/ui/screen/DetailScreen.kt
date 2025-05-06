@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Check
@@ -39,9 +42,11 @@ import androidx.navigation.compose.rememberNavController
 import com.irvanmaulana0013.gudangku.R
 import com.irvanmaulana0013.gudangku.ui.theme.GudangkuTheme
 
+const val KEY_ID_BARANG = "idBarang"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavHostController) {
+fun DetailScreen(navController: NavHostController, id: Long? = null) {
     var namaBrg by remember { mutableStateOf("") }
     var kategoriBrg by remember { mutableStateOf("") }
     var jumlahBrg by remember { mutableStateOf("") }
@@ -60,7 +65,10 @@ fun DetailScreen(navController: NavHostController) {
                     }
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.tambah_barang))
+                    if (id == null)
+                        Text(text = stringResource(id = R.string.tambah_barang))
+                    else
+                        Text(text = stringResource(id = R.string.edit_barang))
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -113,7 +121,8 @@ fun FormBarang(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
@@ -177,7 +186,8 @@ fun FormBarang(
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences
             ),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth()
+                .height(412.dp)
         )
     }
 }
