@@ -13,4 +13,7 @@
     <string name="invalid">Nama, kategori, jumlah dan deskripsi barang tidak boleh kosong.</string>
     <string name="lainnya">Opsi lainnya</string>
     <string name="hapus">Hapus barang</string>
+    <string name="pesan_hapus">Hapus barang ini?</string>
+    <string name="tombol_hapus">Hapus</string>
+    <string name="tombol_batal">Batal</string>
 </resources>
