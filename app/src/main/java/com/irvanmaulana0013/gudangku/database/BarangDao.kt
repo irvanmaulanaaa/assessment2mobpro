@@ -18,4 +18,7 @@ interface BarangDao {
 
     @Query("SELECT * FROM barang ORDER BY tanggal DESC")
     fun getBarang(): Flow<List<Barang>>
+
+    @Query("SELECT * FROM barang WHERE id = :id")
+    suspend fun getBarangById (id: Long): Barang?
 }

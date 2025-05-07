@@ -28,7 +28,22 @@ class DetailViewModel(private val dao: BarangDao): ViewModel() {
         }
     }
 
-    fun getBarang(id: Long): Barang? {
-        return null
+    suspend fun getBarang(id: Long): Barang? {
+        return dao.getBarangById(id)
+    }
+
+    fun update(id: Long, nama: String, kategori: String, jumlah: String, deskripsi: String) {
+        val barang = Barang(
+            id = id,
+            tanggal = formatter.format(Date()),
+            nama = nama,
+            kategori = kategori,
+            jumlah = jumlah,
+            deskripsi = deskripsi
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.update(barang)
+        }
     }
 }
