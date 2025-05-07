@@ -1,6 +1,7 @@
 package com.irvanmaulana0013.gudangku.ui.screen
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -43,13 +45,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.irvanmaulana0013.gudangku.R
 import com.irvanmaulana0013.gudangku.ui.theme.GudangkuTheme
+import com.irvanmaulana0013.gudangku.util.ViewModelFactory
 
 const val KEY_ID_BARANG = "idBarang"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavHostController, id: Long? = null) {
-    val viewModel: MainViewModel = viewModel()
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: DetailViewModel = viewModel(factory = factory)
 
     var namaBrg by remember { mutableStateOf("") }
     var kategoriBrg by remember { mutableStateOf("") }
@@ -88,7 +93,18 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        if (
+                            namaBrg == "" || kategoriBrg == "" ||
+                            jumlahBrg == "" || deskripsiBrg == ""
+                            ) {
+                                Toast.makeText(context, R.string.invalid, Toast.LENGTH_LONG).show()
+                                return@IconButton
+                        }
+                        if (id == null) {
+                            viewModel.insert(namaBrg, kategoriBrg, jumlahBrg, deskripsiBrg)
+                        }
+                        navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Outlined.Check,
                             contentDescription = stringResource(R.string.simpan),
