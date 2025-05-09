@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gudangku</string>
+    <string name="list_kosong">Belum ada data</string>
+    <string name="x_diklik">%1$s diklik!</string>
+    <string name="tambah_barang">Tambah barang</string>
+    <string name="nama_barang">Nama</string>
+    <string name="kategori_barang">Kategori</string>
+    <string name="jumlah_barang">Jumlah</string>
+    <string name="deskripsi_barang">Deskripsi</string>
+    <string name="kembali">Kembali</string>
+    <string name="simpan">Simpan</string>
+    <string name="edit_barang">Ubah barang</string>
+    <string name="invalid">Nama, kategori, jumlah dan deskripsi barang tidak boleh kosong.</string>
+    <string name="lainnya">Opsi lainnya</string>
+    <string name="hapus">Hapus barang</string>
+    <string name="pesan_hapus">Barang berhasil dihapus</string>
+    <string name="tombol_hapus">Hapus</string>
+    <string name="tombol_batal">Batal</string>
+    <string name="list">Tampilan list</string>
+    <string name="grid">Tampilan grid</string>
+    <string name="sampah">Keranjang sampah</string>
+    <string name="hapus_permanen">Apakah Anda yakin hapus barang ini?</string>
+    <string name="tombol_undo">Pulihkan</string>
+</resources>
