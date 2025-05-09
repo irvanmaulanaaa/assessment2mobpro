@@ -12,7 +12,7 @@
     <string name="simpan">Simpan</string>
     <string name="edit_barang">Ubah barang</string>
     <string name="invalid">Nama, kategori, jumlah dan deskripsi barang tidak boleh kosong.</string>
-    <string name="lainnya">Opsi lainnya</string>
+    <string name="opsi_lainnya">Opsi lainnya</string>
     <string name="hapus">Hapus barang</string>
     <string name="pesan_hapus">Barang berhasil dihapus</string>
     <string name="tombol_hapus">Hapus</string>
@@ -22,4 +22,11 @@
     <string name="sampah">Keranjang sampah</string>
     <string name="hapus_permanen">Apakah Anda yakin hapus barang ini?</string>
     <string name="tombol_undo">Pulihkan</string>
+    <string name="elektronik">Elektronik</string>
+    <string name="perabotan">Perabotan Rumah Tangga</string>
+    <string name="kendaraan">Kendaraan</string>
+    <string name="peralatan">Peralatan Rumah Tangga</string>
+    <string name="pakaian">Pakaian</string>
+    <string name="lainnya">Lainnya</string>
+
 </resources>

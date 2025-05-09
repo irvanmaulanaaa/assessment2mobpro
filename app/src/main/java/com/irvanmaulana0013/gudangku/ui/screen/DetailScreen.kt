@@ -122,7 +122,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         IconButton(onClick = { expanded = true }) {
                             Icon(
                                 imageVector = Icons.Filled.MoreVert,
-                                contentDescription = stringResource(R.string.lainnya),
+                                contentDescription = stringResource(R.string.opsi_lainnya),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             DropdownMenu(
@@ -174,12 +174,12 @@ fun FormBarang(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val categories = listOf(
-        "Elektronik",
-        "Perabotan Rumah Tangga",
-        "Kendaraan",
-        "Peralatan Rumah Tangga",
-        "Pakaian",
-        "Lainnya"
+        stringResource(R.string.elektronik),
+        stringResource(R.string.perabotan),
+        stringResource(R.string.kendaraan),
+        stringResource(R.string.peralatan),
+        stringResource(R.string.pakaian),
+        stringResource(R.string.lainnya)
     )
     Column(
         modifier = modifier
