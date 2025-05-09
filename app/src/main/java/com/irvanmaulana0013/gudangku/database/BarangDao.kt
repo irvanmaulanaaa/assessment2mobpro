@@ -16,12 +16,21 @@ interface BarangDao {
     @Update
     suspend fun update(barang: Barang)
 
-    @Query("SELECT * FROM barang ORDER BY tanggal DESC")
+    @Query("SELECT * FROM barang WHERE isDeleted = 0 ORDER BY tanggal DESC")
     fun getBarang(): Flow<List<Barang>>
 
     @Query("SELECT * FROM barang WHERE id = :id")
-    suspend fun getBarangById (id: Long): Barang?
+    suspend fun getBarangById(id: Long): Barang?
 
     @Query("DELETE FROM barang WHERE id = :id")
-    suspend fun deleteById (id: Long)
+    suspend fun deleteById(id: Long)
+
+    @Query("UPDATE barang SET isDeleted = 1 WHERE id = :id")
+    suspend fun moveToRecycleBinById(id: Long)
+
+    @Query("UPDATE barang SET isDeleted = 0 WHERE id = :id")
+    suspend fun restoreFromRecycleBinById(id: Long)
+
+    @Query("SELECT * FROM barang WHERE isDeleted = 1 ORDER BY tanggal DESC")
+    fun getDeletedBarang(): Flow<List<Barang>>
 }

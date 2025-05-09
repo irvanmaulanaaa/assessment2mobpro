@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -26,12 +27,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -59,8 +66,31 @@ import kotlinx.coroutines.launch
 fun MainScreen(navController: NavHostController) {
     val dataStore = SettingsDataStore(LocalContext.current)
     val showList by dataStore.layoutFlow.collectAsState(true)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel : MainViewModel = viewModel(factory = factory)
+
+    val currentBackStackEntry = navController.currentBackStackEntry
+    val savedStateHandle = currentBackStackEntry?.savedStateHandle
+    val deletedItemId = savedStateHandle?.get<Long?>(KEY_DELETED_ITEM_ID)
+
+    LaunchedEffect(deletedItemId) {
+        deletedItemId?.let { id ->
+            val result = snackbarHostState.showSnackbar(
+                message = context.getString(R.string.pesan_hapus),
+                actionLabel = context.getString(R.string.tombol_undo),
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                viewModel.undoDeleted(id)
+            }
+            savedStateHandle.remove<Long>(KEY_DELETED_ITEM_ID)
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -88,6 +118,15 @@ fun MainScreen(navController: NavHostController) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                    IconButton(onClick = {
+                        navController.navigate(Screen.RecycleBin.route)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.sampah),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             )
         },
@@ -105,18 +144,21 @@ fun MainScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        ScreenContent(showList, Modifier.padding(innerPadding), navController)
+        ScreenContent(showList, Modifier.padding(innerPadding), navController, viewModel)
     }
 }
 
 @Composable
-fun ScreenContent(showList: Boolean, modifier: Modifier = Modifier, navController: NavHostController) {
-    val context = LocalContext.current
-    val factory = ViewModelFactory(context)
-    val viewModel: MainViewModel = viewModel(factory = factory)
+fun ScreenContent(
+    showList: Boolean,
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    viewModel: MainViewModel
+) {
     val data by viewModel.data.collectAsState()
+    val filtered = data.filter { !it.isDeleted }
 
-    if (data.isEmpty()) {
+    if (filtered.isEmpty()) {
         Column(
             modifier = modifier.fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.Center,
@@ -131,9 +173,9 @@ fun ScreenContent(showList: Boolean, modifier: Modifier = Modifier, navControlle
                 modifier = modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 84.dp)
             ) {
-                items(data) {
-                    ListItem(barang = it) {
-                        navController.navigate(Screen.FormUbah.withId(it.id))
+                items(filtered) { item ->
+                    ListItem(barang = item) {
+                        navController.navigate(Screen.FormUbah.withId(item.id))
                     }
                     HorizontalDivider()
                 }
@@ -147,9 +189,9 @@ fun ScreenContent(showList: Boolean, modifier: Modifier = Modifier, navControlle
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 84.dp)
             ) {
-                items(data) {
-                    GridItem(barang = it) {
-                        navController.navigate(Screen.FormUbah.withId(it.id))
+                items(filtered) { item ->
+                    GridItem(barang = item) {
+                        navController.navigate(Screen.FormUbah.withId(item.id))
                     }
                 }
             }
@@ -190,7 +232,8 @@ fun ListItem(barang: Barang, onClick: () -> Unit) {
 @Composable
 fun GridItem(barang: Barang, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = Modifier.fillMaxWidth()
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),

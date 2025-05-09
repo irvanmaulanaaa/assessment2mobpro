@@ -47,9 +47,9 @@ class DetailViewModel(private val dao: BarangDao): ViewModel() {
         }
     }
 
-    fun delete(id: Long) {
+    fun moveToRecycleBin(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteById(id)
+            dao.moveToRecycleBinById(id)
         }
     }
 }

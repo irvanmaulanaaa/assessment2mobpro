@@ -11,5 +11,6 @@ data class Barang(
     val kategori: String,
     val jumlah: String,
     val deskripsi: String,
-    val tanggal: String
+    val tanggal: String,
+    val isDeleted: Boolean = false
 )

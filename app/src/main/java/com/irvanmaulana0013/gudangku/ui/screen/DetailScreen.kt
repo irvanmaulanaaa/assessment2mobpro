@@ -50,6 +50,7 @@ import com.irvanmaulana0013.gudangku.ui.theme.GudangkuTheme
 import com.irvanmaulana0013.gudangku.util.ViewModelFactory
 
 const val KEY_ID_BARANG = "idBarang"
+const val KEY_DELETED_ITEM_ID = "deleted_item_id"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +63,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     var kategoriBrg by remember { mutableStateOf("") }
     var jumlahBrg by remember { mutableStateOf("") }
     var deskripsiBrg by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (id == null) return@LaunchedEffect
@@ -109,7 +110,8 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         } else {
                             viewModel.update(id, namaBrg, kategoriBrg, jumlahBrg, deskripsiBrg)
                         }
-                        navController.popBackStack() }) {
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.Check,
                             contentDescription = stringResource(R.string.simpan),
@@ -117,8 +119,30 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         )
                     }
                     if (id != null) {
-                        DeleteAction {
-                            showDialog = true
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = stringResource(R.string.lainnya),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = stringResource(id = R.string.hapus))
+                                    },
+                                    onClick = {
+                                        expanded = false
+                                        viewModel.moveToRecycleBin(id)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set(KEY_DELETED_ITEM_ID, id)
+                                        navController.popBackStack()
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -136,42 +160,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             onDescChange = { deskripsiBrg = it },
             modifier = Modifier.padding(padding)
         )
-
-        if (id != null && showDialog) {
-            DisplayAlertDialog(
-                onDismissRequest = { showDialog = false }) {
-                showDialog = false
-                viewModel.delete(id)
-                navController.popBackStack()
-            }
-        }
-    }
-}
-
-@Composable
-fun DeleteAction(delete: () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-
-    IconButton(onClick = { expanded = true }) {
-        Icon(
-            imageVector = Icons.Filled.MoreVert,
-            contentDescription = stringResource(R.string.lainnya),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(id = R.string.hapus))
-                },
-                onClick = {
-                    expanded = false
-                    delete()
-                }
-            )
-        }
     }
 }
 
